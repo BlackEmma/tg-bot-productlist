@@ -1,14 +1,27 @@
 require('dotenv').config();
-const express = require('express');
 const { Telegraf } = require('telegraf');
-const { help, greeting } = require('./textForBot');
+const { help, greeting, errorMessage } = require('./textForBot');
+const {
+  addProduct,
+} = require('./dbFunctions');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
+
 bot.start((ctx) => ctx.reply(greeting));
+
 bot.help((ctx) => ctx.reply(help));
-bot.on('message', (ctx) => {
-  console.log(ctx.message); // проверка, что мы получаем сообщение
+
+bot.on('message', async (ctx) => {
+  try {
+    const product = ctx.message.text;
+    const userId = ctx.message.from.id;
+    addProduct(userId, product);
+  } catch (error) {
+    ctx.reply(errorMessage);
+    console.log(error.message);
+  }
 });
+
 bot.launch();
 
 // Enable graceful stop
