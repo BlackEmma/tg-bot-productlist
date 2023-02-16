@@ -22,7 +22,18 @@ const getProductList = async (userId) => {
   }
 };
 
+const deleteProductList = async (userId) => {
+  try {
+    await Product.destroy({ where: { user_id: userId } });
+    return ('success');
+  } catch (error) {
+    console.log(error.message);
+    return ('Что-то пошло не так, попробуйте позже');
+  }
+};
+
 module.exports = {
   addProduct,
   getProductList,
+  deleteProductList,
 };
