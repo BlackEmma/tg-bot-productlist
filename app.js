@@ -48,9 +48,12 @@ bot.action(['yes', 'no'], (ctx) => {
 
 bot.on('message', async (ctx) => {
   try {
-    const product = ctx.message.text;
+    const { text } = ctx.message;
+    const products = text.split('\n');
     const userId = ctx.message.from.id;
-    addProduct(userId, product);
+    products.forEach((product) => {
+      addProduct(userId, product);
+    });
   } catch (error) {
     ctx.reply(errorMessage);
     console.log(error.message);
